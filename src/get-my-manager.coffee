@@ -18,7 +18,7 @@ Axios = require 'axios'
 
 module.exports = (robot) ->
 
-  regex = /\bwho\s*is\s*my\s*manager/i 
+  regex = /(\bwho\s*is\s*my\s*manager)|(\bget\s*my\s*manager)|(my\s*man)/i
 
   robot.hear regex, (res) ->
     if res.message.token == undefined
@@ -30,9 +30,9 @@ module.exports = (robot) ->
         baseURL: 'https://graph.microsoft.com/v1.0/',
         headers: {'Authorization': 'Bearer ' + res.message.token},
         responseType: 'json', 
-      }).then((data)=>
-        console.log(data)
-        res.send data
+      }).then((response)=>
+        reply = "Your manager is: <a href=\"mailto:" + response.data.mail + "\">" + response.data.displayName + "</a>" 
+        res.send reply
       ).catch((error) =>
         console.log(error)
         res.send 'someone who earns more than you :P'
